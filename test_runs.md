@@ -102,3 +102,30 @@
         - face: 81.56 % (-1.63 %)
 
 > Slight improvement loss of face detection accuracy with flip and crop, but overall improvement in accuracy
+
+## Test run 8
+
+- **model**: `model_2025-01-07_08-20-25`
+    - n_epochs: 20
+    - transforms:
+        - `transforms.RandomHorizontalFlip(p=0.5)`
+        - `transforms.RandomCrop(32, padding=4)`
+    - dataset:
+        - train_images (true=797, false=6831)
+        - false_positives_targets (false=1032)
+
+> No real improvement in excluding false positives, but added dataset is pretty small
+
+## Test run 9
+
+- **model**: `model_2025-01-07_09-45-42`
+    - n_epochs: 20
+    - transforms:
+        - `transforms.RandomHorizontalFlip(p=0.5)`
+        - `transforms.RandomCrop(32, padding=4)`
+    - dataset:
+        - train_images (true=797, false=6831)
+        - false_positives_targets (false=1032)
+        - false_positives_targets_v2 (false=246641)
+
+> Significant improvement in excluding false positives, but still a lot of false positives
