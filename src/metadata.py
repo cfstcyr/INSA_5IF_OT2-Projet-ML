@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class Metadata(BaseModel):
+class TrainMetadata(BaseModel):
     name: str
     n_epochs: int
     train_loss: list[float]

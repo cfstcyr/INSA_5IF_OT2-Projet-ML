@@ -4,9 +4,9 @@ import torch
 from torch import nn, optim
 from tqdm import tqdm
 from src.config import config
-from src.data import get_dataloader, get_datasets
+from src.data import get_dataloaders, get_datasets
 from src.device import get_device
-from src.metadata import Metadata
+from src.metadata import TrainMetadata
 from src.net import Net
 
 
@@ -50,7 +50,8 @@ def train(
     device: torch.device,
     train_loader: torch.utils.data.DataLoader,
     valid_loader: torch.utils.data.DataLoader,
-) -> tuple[Metadata, dict]:
+    n_epochs: int = config.n_epochs,
+) -> tuple[TrainMetadata, dict]:
     net = Net().to(device)
 
     logger.info(f"Training {name}...")
@@ -63,7 +64,12 @@ def train(
     val_accuracies = []
     best_val_loss = float("inf")
 
-    for _ in tqdm(range(config.n_epochs), desc="Epochs"):
+    initial_val_loss, initial_val_accuracy = validate(net, valid_loader, criterion, device)
+
+    print(f"Initial validation loss: {initial_val_loss:.3f}")
+    print(f"Initial validation accuracy: {initial_val_accuracy:.3f}")
+
+    for _ in tqdm(range(n_epochs), desc="Epochs"):
         running_loss = 0.0
 
         for data in (batch_progress := tqdm(train_loader, desc="Batches")):
@@ -90,9 +96,9 @@ def train(
         if val_loss < best_val_loss:
             best_val_loss = val_loss
 
-    metadata = Metadata(
+    metadata = TrainMetadata(
         name=name,
-        n_epochs=config.n_epochs,
+        n_epochs=n_epochs,
         train_loss=train_losses,
         val_loss=val_losses,
         val_accuracy=val_accuracies,
@@ -109,11 +115,9 @@ if __name__ == "__main__":
 
     device = get_device()
 
-    train_loader, valid_loader, _ = get_dataloader(*get_datasets())
+    train_loader, valid_loader, _ = get_dataloaders(*get_datasets())
 
-    metadata, state_dict = train(
-        name, device, train_loader, valid_loader
-    )
+    metadata, state_dict = train(name, device, train_loader, valid_loader)
 
     model_dir.mkdir(parents=True, exist_ok=True)
 

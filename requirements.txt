@@ -3,3 +3,4 @@ torchvision
 tqdm
 pydantic
 pydantic-settings
+deeplake<4

@@ -19,17 +19,26 @@ transform = transforms.Compose(
     ]
 )
 
+def get_dataset(data_dir: Path) -> torchvision.datasets.VisionDataset:
+    return torchvision.datasets.ImageFolder(data_dir, transform=transform)
+
+
+def get_default_dataloader(dataset: torchvision.datasets.VisionDataset, *, batch_size: int, **kwargs) -> torch.utils.data.DataLoader:
+    return torch.utils.data.DataLoader(
+        dataset,
+        batch_size=batch_size,
+        generator=torch.Generator().manual_seed(42),
+        **kwargs,
+    )
+
 
 def get_datasets(
     train_dir: Path = config.train_dir, test_dir: Path = config.test_dir
 ) -> tuple[torchvision.datasets.VisionDataset, torchvision.datasets.VisionDataset]:
-    train_data = torchvision.datasets.ImageFolder(train_dir, transform=transform)
-    test_data = torchvision.datasets.ImageFolder(test_dir, transform=transform)
-
-    return train_data, test_data
+    return get_dataset(train_dir), get_dataset(test_dir)
 
 
-def get_dataloader(
+def get_dataloaders(
     train_data: torchvision.datasets.VisionDataset,
     test_data: torchvision.datasets.VisionDataset,
     batch_size: int = config.batch_size,
@@ -52,18 +61,8 @@ def get_dataloader(
         valid_idx, generator=torch.Generator().manual_seed(42)
     )
 
-    train_loader = torch.utils.data.DataLoader(
-        train_data, batch_size=batch_size, sampler=train_sampler, num_workers=1
-    )
-    valid_loader = torch.utils.data.DataLoader(
-        train_data, batch_size=batch_size, sampler=valid_sampler, num_workers=1
-    )
-    test_loader = torch.utils.data.DataLoader(
-        test_data,
-        batch_size=batch_size,
-        shuffle=True,
-        num_workers=1,
-        generator=torch.Generator().manual_seed(42),
-    )
+    train_loader = get_default_dataloader(train_data, batch_size=batch_size, sampler=train_sampler)
+    valid_loader = get_default_dataloader(train_data, batch_size=batch_size, sampler=valid_sampler)
+    test_loader = get_default_dataloader(test_data, batch_size=batch_size, shuffle=True)
 
     return train_loader, valid_loader, test_loader

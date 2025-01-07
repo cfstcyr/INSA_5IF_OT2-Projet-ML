@@ -4,7 +4,7 @@ from typing import Any
 import torch
 from tqdm import tqdm
 from src.config import config
-from src.data import CLASSES, get_dataloader, get_datasets
+from src.data import CLASSES, get_dataloaders, get_datasets
 from src.device import get_device
 from src.net import Net
 import os
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     net.load_state_dict(torch.load(model_dir / "model.pth", weights_only=False))
     net.to(device)
 
-    _, _, test_loader = get_dataloader(*get_datasets())
+    _, _, test_loader = get_dataloaders(*get_datasets())
 
     test_results = test(net, test_loader, device)
 

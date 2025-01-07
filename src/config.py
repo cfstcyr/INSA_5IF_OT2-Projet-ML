@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings
 
 class Config(BaseSettings):
     data_dir: DirectoryPath = Path("data")
-    train_dir: DirectoryPath = data_dir / "train_images"
+    train_dir: DirectoryPath = data_dir / "train_images_all"
     test_dir: DirectoryPath = data_dir / "test_images"
 
     models_dir: DirectoryPath = Path("models")
