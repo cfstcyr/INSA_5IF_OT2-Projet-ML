@@ -33,6 +33,7 @@ src/                                        # Source code directory
 ├── results.py                              # Model evaluation data structure
 ├── test.py                                 # Model testing script
 └── train.py                                # Model training script
+test_runs.md                                # List of test runs and results
 ```
 
 ## Installation
