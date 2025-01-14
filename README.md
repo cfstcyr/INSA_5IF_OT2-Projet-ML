@@ -27,6 +27,8 @@ src/                                        # Source code directory
 │   ├── scale_sliding_image_dataset.py      # PyTorch dataset to iterate over sliding windows of images
 ├── config.py                               # Configuration and hyper-parameter values
 ├── data.py                                 # Data processing functions
+├── detection_utils.py                      # Face detection utility functions
+├── detection.py                            # Face detection functions
 ├── device.py                               # Device selection function
 ├── metadata.py                             # Model metadata data structure
 ├── net.py                                  # Model definition
@@ -107,3 +109,20 @@ The face detection algorithm is implemented in the `notebooks/detection.ipynb` n
 1. Update the environment variables defined in the notebook to match your configuration.
 2. Update the model directory in the `load_state_dict` function call to the one you want to use for face detection.
 3. Update the `src_path` variable to the image you want to test.
+
+### Face detection metrics
+
+To run face detection on a set of images with labels, run the following command:
+
+```
+python -m src.detection
+```
+
+The code uses this dataset [https://www.kaggle.com/datasets/ngoduy/dataset-for-face-detection](https://www.kaggle.com/datasets/ngoduy/dataset-for-face-detection).
+
+Update the `model_path` and the `dataset_dir` variables in the `src/detection.py` file to match your configuration.
+
+This code computes the following metrics:
+
+- Noise ratio: the ratio of false positives to the total number of detections (e.g. if there are 10 detections and 2 are noise, the noise ratio is 0.2)
+- Face accuracy: for the detected faces (without noise), the average overlap with the ground truth faces (e.g. if there are two faces with 0.5 and 0.7 overlap, the face accuracy is 0.6)

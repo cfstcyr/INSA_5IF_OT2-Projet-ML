@@ -162,7 +162,7 @@ if __name__ == "__main__":
 
     for i, res in enumerate(detection(net, device, dataset_dir)):
         all_results.append(res)
-        print(1 - res.noise_ratio, res.faces_accuracy)
+        print(f"Noise ratio: {res.noise_ratio}, Faces accuracy: {res.faces_accuracy}")
 
         if i > 10:
             break
