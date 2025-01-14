@@ -126,9 +126,11 @@ def detection(net: Net, device: torch.device, dataset_dir: Path, *, window_size:
                 noise_count += 1
             else:
                 face_accuracy_sum += best_score
+        
+        found_face_count = (len(scaled_boxes_index[0]) - noise_count)
 
         noise_ratio = noise_count / len(scaled_boxes_index[0])
-        face_accuracy = face_accuracy_sum / (len(scaled_boxes_index[0]) - noise_count)
+        face_accuracy = face_accuracy_sum / found_face_count if found_face_count > 0 else 0
 
         yield ImageResult(
             source=image_source,
@@ -164,7 +166,7 @@ if __name__ == "__main__":
         all_results.append(res)
         print(f"Noise ratio: {res.noise_ratio}, Faces accuracy: {res.faces_accuracy}")
 
-        if i > 10:
+        if i > 50:
             break
     
     agg_results()
